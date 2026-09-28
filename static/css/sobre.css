@@ -1,0 +1,128 @@
+body {
+    background: #f8f3ed;
+}
+
+.sobre-main {
+    padding-top: 110px;
+}
+
+.sobre-hero,
+.historia-section,
+.ambiente-section,
+.localizacao-section,
+.memorial-section {
+    padding: 90px 0;
+}
+
+.sobre-hero {
+    background: linear-gradient(135deg, rgba(184, 122, 88, 0.08), rgba(255,255,255,0));
+}
+
+.sobre-hero h1 {
+    font-size: clamp(2.8rem, 5vw, 4.4rem);
+    color: var(--coffee-dark);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-family: "Playfair Display", serif;
+}
+
+.sobre-hero h1 span,
+.section-heading h2 span,
+.ambiente-section h2 span,
+.localizacao-section h2 span {
+    color: var(--coffee);
+    font-style: italic;
+}
+
+.sobre-hero p,
+.historia-section p,
+.ambiente-section p,
+.localizacao-section p,
+.memorial-section p {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 1.02rem;
+}
+
+.hero-image-sobre,
+.ambiente-image,
+.mapa-box img {
+    width: 100%;
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    object-fit: cover;
+}
+
+.hero-image-sobre {
+    height: 420px;
+}
+
+.section-heading h2,
+.ambiente-section h2,
+.localizacao-section h2,
+.memorial-section h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    color: var(--coffee-dark);
+    margin-bottom: 20px;
+}
+
+.lista-ambientes {
+    list-style: none;
+    padding: 0;
+    margin-top: 25px;
+}
+
+.lista-ambientes li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 14px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.lista-ambientes li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--coffee);
+    font-weight: 700;
+}
+
+.ambiente-image {
+    height: 500px;
+}
+
+.info-localizacao {
+    margin-top: 28px;
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--cream-dark);
+}
+
+.info-localizacao p {
+    margin: 0 0 10px;
+}
+
+.mapa-box img {
+    height: 380px;
+}
+
+.memorial-section {
+    background: #f0e6dc;
+}
+
+@media (max-width: 991px) {
+    .sobre-main {
+        padding-top: 40px;
+    }
+
+    .sobre-hero,
+    .historia-section,
+    .ambiente-section,
+    .localizacao-section,
+    .memorial-section {
+        padding: 70px 0;
+    }
+}
