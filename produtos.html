@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Produtos - Café Aurora</title>
+  <meta name="description" content="Cardápio digital da Café Aurora" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/style.css" />
+  <link rel="stylesheet" href="./static/css/produtos.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="index.html"><span class="brand-icon">☕</span> Café <strong>Aurora</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
+            <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+            <li class="nav-item"><a class="nav-link" href="sobre.html">Sobre</a></li>
+            <li class="nav-item"><a class="nav-link active" href="produtos.html">Produtos</a></li>
+            <li class="nav-item" id="nav-pedidos" style="display:none;"><a class="nav-link" href="pedidos.html">Meus Pedidos</a></li>
+            <li class="nav-item" id="nav-admin" style="display:none;"><a class="nav-link" href="administrativo.html">Administrativo</a></li>
+            <li class="nav-item"><a id="btn-login-nav" class="btn btn-coffee" href="login.html">Login</a></li>
+            <li class="nav-item" id="nav-usuario" style="display:none;">
+              <div class="usuario-menu">
+                <span id="usuario-nome">Usuário</span>
+                <button id="btn-logout" class="btn btn-outline-coffee btn-sm">Sair</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="produtos-main">
+    <section class="produtos-hero">
+      <div class="container text-center">
+        <span class="eyebrow">CARDÁPIO DIGITAL</span>
+        <h1>Escolha o que combina com o seu momento.</h1>
+        <p>Sabores da casa para atendimento no balcão, mesas ou entrega.</p>
+      </div>
+    </section>
+
+    <div class="container produtos-layout">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="filtros">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="bebidas">Bebidas</button>
+            <button class="filter-btn" data-filter="paes">Pães</button>
+            <button class="filter-btn" data-filter="doces">Doces</button>
+            <button class="filter-btn" data-filter="salgados">Salgados</button>
+          </div>
+
+          <div class="produtos-grid" id="produtosGrid"></div>
+        </div>
+
+        <aside class="col-lg-4">
+          <div class="pedido-resumo">
+            <h2>Seu pedido</h2>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="resumo-total">
+              <span>Subtotal</span>
+              <strong id="subTotal">R$ 0,00</strong>
+            </div>
+            <div class="form-pedido">
+              <label for="tipoAtendimento">Tipo de atendimento</label>
+              <select id="tipoAtendimento">
+                <option value="balcao">Balcão</option>
+                <option value="mesa">Mesa</option>
+                <option value="entrega">Entrega</option>
+              </select>
+
+              <div id="campoMesa" class="campo-extra" style="display:none;">
+                <label for="numeroMesa">Número da mesa</label>
+                <select id="numeroMesa">
+                  <option value="1">Mesa 1</option>
+                  <option value="2">Mesa 2</option>
+                  <option value="3">Mesa 3</option>
+                  <option value="4">Mesa 4</option>
+                  <option value="5">Mesa 5</option>
+                  <option value="6">Mesa 6</option>
+                  <option value="7">Mesa 7</option>
+                  <option value="8">Mesa 8</option>
+                  <option value="9">Mesa 9</option>
+                  <option value="10">Mesa 10</option>
+                  <option value="11">Mesa 11</option>
+                  <option value="12">Mesa 12</option>
+                  <option value="13">Mesa 13</option>
+                  <option value="14">Mesa 14</option>
+                  <option value="15">Mesa 15</option>
+                </select>
+              </div>
+
+              <div id="campoEntrega" class="campo-extra" style="display:none;">
+                <label for="enderecoEntrega">Endereço para entrega</label>
+                <input id="enderecoEntrega" type="text" placeholder="Rua, número e bairro" />
+              </div>
+
+              <label for="observacoes">Observações</label>
+              <textarea id="observacoes" rows="3" placeholder="Ex.: sem açúcar, bem quente, etc."></textarea>
+            </div>
+            <button id="btnFinalizarPedido" class="btn btn-coffee w-100 mt-3">Finalizar pedido</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row gy-4 align-items-center">
+        <div class="col-lg-5">
+          <a class="navbar-brand footer-brand" href="index.html"><span class="brand-icon">☕</span> Café <strong>Aurora</strong></a>
+          <p>Um cantinho especial para você aproveitar cada gole, cada conversa e cada momento.</p>
+        </div>
+        <div class="col-lg-3">
+          <h4>Visite-nos</h4>
+          <p>Rua das Flores, 120<br>Centro — São Paulo, SP</p>
+        </div>
+        <div class="col-lg-4">
+          <h4>Horário de funcionamento</h4>
+          <p>Segunda a sábado: 08h às 20h<br>Domingo: 09h às 18h</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 Café Aurora. Todos os direitos reservados.</span>
+        <span>Feito com café e carinho ☕</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="./static/js/auth.js"></script>
+  <script src="./static/js/produtos.js"></script>
+</body>
+</html>

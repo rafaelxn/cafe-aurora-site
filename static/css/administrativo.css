@@ -1,0 +1,89 @@
+body {
+  background: #f8f3ed;
+}
+
+.pedidos-main {
+  padding-top: 120px;
+}
+
+.pedidos-header {
+  padding: 30px 0 20px;
+}
+
+.pedidos-header h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  color: var(--coffee-dark);
+}
+
+.pedidos-header h1 span {
+  color: var(--coffee);
+  font-style: italic;
+}
+
+.pedidos-container {
+  padding: 20px 0 90px;
+}
+
+.lista-pedidos {
+  display: grid;
+  gap: 18px;
+}
+
+.pedido-card {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 10px 24px rgba(67, 42, 29, 0.04);
+}
+.pedido-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.pedido-top h3 {
+  color: var(--coffee-dark);
+  margin: 0;
+}
+.status-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.status-badge.pendente { background: #fff2d4; color: #a67600; }
+.status-badge.em_atendimento { background: #dfeeff; color: #1a5db0; }
+.status-badge.finalizado { background: #dff7e7; color: #1d8f43; }
+
+.pedido-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 16px;
+}
+.pedido-produtos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--text);
+}
+.pedido-produtos li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.pedido-produtos li:last-child { border-bottom: none; }
+
+.empty-pedidos {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--cream-dark);
+}
