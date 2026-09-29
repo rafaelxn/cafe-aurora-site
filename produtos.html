@@ -1,145 +1,221 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Produtos - Café Aurora</title>
-  <meta name="description" content="Cardápio digital da Café Aurora" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./static/css/style.css" />
-  <link rel="stylesheet" href="./static/css/produtos.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio - Café Aurora</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/produtos.css">
+    <link rel="stylesheet" href="./static/css/carrinho.css">
 </head>
 <body>
-  <header class="site-header">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container">
-        <a class="navbar-brand" href="index.html"><span class="brand-icon">☕</span> Café <strong>Aurora</strong></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="menuPrincipal">
-          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
-            <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
-            <li class="nav-item"><a class="nav-link" href="sobre.html">Sobre</a></li>
-            <li class="nav-item"><a class="nav-link active" href="produtos.html">Produtos</a></li>
-            <li class="nav-item" id="nav-pedidos" style="display:none;"><a class="nav-link" href="pedidos.html">Meus Pedidos</a></li>
-            <li class="nav-item" id="nav-admin" style="display:none;"><a class="nav-link" href="administrativo.html">Administrativo</a></li>
-            <li class="nav-item"><a id="btn-login-nav" class="btn btn-coffee" href="login.html">Login</a></li>
-            <li class="nav-item" id="nav-usuario" style="display:none;">
-              <div class="usuario-menu">
-                <span id="usuario-nome">Usuário</span>
-                <button id="btn-logout" class="btn btn-outline-coffee btn-sm">Sair</button>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
-
-  <main class="produtos-main">
-    <section class="produtos-hero">
-      <div class="container text-center">
-        <span class="eyebrow">CARDÁPIO DIGITAL</span>
-        <h1>Escolha o que combina com o seu momento.</h1>
-        <p>Sabores da casa para atendimento no balcão, mesas ou entrega.</p>
-      </div>
-    </section>
-
-    <div class="container produtos-layout">
-      <div class="row g-4">
-        <div class="col-lg-8">
-          <div class="filtros">
-            <button class="filter-btn active" data-filter="all">Todos</button>
-            <button class="filter-btn" data-filter="bebidas">Bebidas</button>
-            <button class="filter-btn" data-filter="paes">Pães</button>
-            <button class="filter-btn" data-filter="doces">Doces</button>
-            <button class="filter-btn" data-filter="salgados">Salgados</button>
-          </div>
-
-          <div class="produtos-grid" id="produtosGrid"></div>
-        </div>
-
-        <aside class="col-lg-4">
-          <div class="pedido-resumo">
-            <h2>Seu pedido</h2>
-            <div id="cart-items" class="cart-items"></div>
-            <div class="resumo-total">
-              <span>Subtotal</span>
-              <strong id="subTotal">R$ 0,00</strong>
+    <!-- Header com navegação -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <span class="brand-icon">☕</span>Café Aurora
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="produtos.html">Cardápio</a>
+                        </li>
+                        <li class="nav-item">
+                            <button class="btn btn-link nav-link position-relative" id="btnCarrinho">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartBadge" style="display: none;">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="form-pedido">
-              <label for="tipoAtendimento">Tipo de atendimento</label>
-              <select id="tipoAtendimento">
-                <option value="balcao">Balcão</option>
-                <option value="mesa">Mesa</option>
-                <option value="entrega">Entrega</option>
-              </select>
+        </nav>
+    </header>
 
-              <div id="campoMesa" class="campo-extra" style="display:none;">
-                <label for="numeroMesa">Número da mesa</label>
-                <select id="numeroMesa">
-                  <option value="1">Mesa 1</option>
-                  <option value="2">Mesa 2</option>
-                  <option value="3">Mesa 3</option>
-                  <option value="4">Mesa 4</option>
-                  <option value="5">Mesa 5</option>
-                  <option value="6">Mesa 6</option>
-                  <option value="7">Mesa 7</option>
-                  <option value="8">Mesa 8</option>
-                  <option value="9">Mesa 9</option>
-                  <option value="10">Mesa 10</option>
-                  <option value="11">Mesa 11</option>
-                  <option value="12">Mesa 12</option>
-                  <option value="13">Mesa 13</option>
-                  <option value="14">Mesa 14</option>
-                  <option value="15">Mesa 15</option>
-                </select>
-              </div>
-
-              <div id="campoEntrega" class="campo-extra" style="display:none;">
-                <label for="enderecoEntrega">Endereço para entrega</label>
-                <input id="enderecoEntrega" type="text" placeholder="Rua, número e bairro" />
-              </div>
-
-              <label for="observacoes">Observações</label>
-              <textarea id="observacoes" rows="3" placeholder="Ex.: sem açúcar, bem quente, etc."></textarea>
+    <!-- Hero Section -->
+    <main class="produtos-main">
+        <section class="produtos-hero">
+            <div class="container">
+                <h1>Nosso Cardápio</h1>
+                <p>Descubra nossas seleções especiais de café e acompanhamentos</p>
             </div>
-            <button id="btnFinalizarPedido" class="btn btn-coffee w-100 mt-3">Finalizar pedido</button>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </main>
+        </section>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="row gy-4 align-items-center">
-        <div class="col-lg-5">
-          <a class="navbar-brand footer-brand" href="index.html"><span class="brand-icon">☕</span> Café <strong>Aurora</strong></a>
-          <p>Um cantinho especial para você aproveitar cada gole, cada conversa e cada momento.</p>
-        </div>
-        <div class="col-lg-3">
-          <h4>Visite-nos</h4>
-          <p>Rua das Flores, 120<br>Centro — São Paulo, SP</p>
-        </div>
-        <div class="col-lg-4">
-          <h4>Horário de funcionamento</h4>
-          <p>Segunda a sábado: 08h às 20h<br>Domingo: 09h às 18h</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2024 Café Aurora. Todos os direitos reservados.</span>
-        <span>Feito com café e carinho ☕</span>
-      </div>
-    </div>
-  </footer>
+        <!-- Filtros -->
+        <section class="produtos-layout">
+            <div class="container">
+                <div class="filtros">
+                    <button class="filter-btn active" data-filter="todos">Todos</button>
+                    <button class="filter-btn" data-filter="cafe">Cafés</button>
+                    <button class="filter-btn" data-filter="bebida">Bebidas</button>
+                    <button class="filter-btn" data-filter="doce">Doces</button>
+                    <button class="filter-btn" data-filter="salgado">Salgados</button>
+                </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="./static/js/auth.js"></script>
-  <script src="./static/js/produtos.js"></script>
+                <!-- Grid de Produtos -->
+                <div class="produtos-grid" id="produtosContainer">
+                    <!-- Produtos serão carregados aqui pelo JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal do Carrinho -->
+    <div class="modal fade" id="carrinhoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seu Carrinho</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="carrinhoConteudo">
+                        <p class="text-center text-muted">Seu carrinho está vazio</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="mb-0">Total: <strong id="totalCarrinho">R$ 0,00</strong></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Continuar Comprando</button>
+                                <button type="button" class="btn btn-coffee" id="btnFinalizarCompra">Finalizar Compra</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Pagamento -->
+    <div class="modal fade" id="confirmacaoPagamentoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Dados Pessoais</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="nomeCliente" placeholder="Seu nome">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailCliente" placeholder="seu@email.com">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Telefone</label>
+                                <input type="tel" class="form-control" id="telefoneCliente" placeholder="(11) 99999-9999">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Endereço de Entrega</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Endereço</label>
+                                <input type="text" class="form-control" id="enderecoCliente" placeholder="Rua, número">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Complemento</label>
+                                <input type="text" class="form-control" id="complementoCliente" placeholder="Apto, bloco, etc">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">CEP</label>
+                                <input type="text" class="form-control" id="cepCliente" placeholder="00000-000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Resumo do Pedido</h6>
+                            <div id="resumoPedido"></div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong id="totalPagamento">R$ 0,00</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="mb-3">Forma de Pagamento</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pagamento" id="pix" value="pix" checked>
+                            <label class="form-check-label" for="pix">
+                                PIX
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pagamento" id="cartao" value="cartao">
+                            <label class="form-check-label" for="cartao">
+                                Cartão de Crédito
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pagamento" id="dinheiro" value="dinheiro">
+                            <label class="form-check-label" for="dinheiro">
+                                Dinheiro na Entrega
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-coffee" id="btnConfirmarPagamento">Confirmar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso -->
+    <div class="modal fade" id="sucessoModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content text-center py-5">
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--coffee);"></i>
+                    </div>
+                    <h5 class="mb-3">Pedido Confirmado!</h5>
+                    <p class="text-muted mb-4">Seu pedido foi enviado com sucesso. Você receberá atualizações por email.</p>
+                    <p class="mb-0"><strong id="numPedido">Pedido #123456</strong></p>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-coffee w-100" data-bs-dismiss="modal">Voltar ao Cardápio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Café Aurora. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="./static/js/produtos-dados.js"></script>
+    <script src="./static/js/carrinho.js"></script>
+    <script src="./static/js/produtos.js"></script>
 </body>
 </html>

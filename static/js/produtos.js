@@ -1,181 +1,227 @@
-const USERS_KEY = 'cafe_aurora_users';
-const CURRENT_USER_KEY = 'cafe_aurora_current_user';
+document.addEventListener('DOMContentLoaded', function() {
+  carregarProdutos();
+  setupFiltros();
+  setupCarrinho();
+});
 
-const defaultUsers = [
-  { id: 1, nome: 'Admin Aurora', email: 'admin@aurora.com', senha: 'admin123', tipo: 'gerente' },
-  { id: 2, nome: 'Cliente Demo', email: 'cliente@aurora.com', senha: 'cliente123', tipo: 'cliente' }
-];
-
-function getUsers() {
-  const storage = localStorage.getItem(USERS_KEY);
-  if (!storage) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
-    return [...defaultUsers];
-  }
-  return JSON.parse(storage);
+function carregarProdutos() {
+  const container = document.getElementById('produtosContainer');
+  container.innerHTML = '';
+  
+  produtos.forEach(produto => {
+    const card = document.createElement('div');
+    card.className = 'produto-card';
+    card.setAttribute('data-categoria', produto.categoria);
+    
+    const precoFormatado = 'R$ ' + produto.preco.toFixed(2).replace('.', ',');
+    
+    card.innerHTML = `
+      <div class="produto-imagem">
+        <div style="font-size: 3rem;">${produto.imagem}</div>
+        ${produto.destaque ? '<span class="produto-badge">Destaque</span>' : ''}
+      </div>
+      <div class="produto-info">
+        <h3>${produto.nome}</h3>
+        <p class="descricao">${produto.descricao}</p>
+        <div class="produto-detalhes">
+          <span class="preco">${precoFormatado}</span>
+          <span class="tamanho">${produto.tamanho}</span>
+        </div>
+        <button class="btn-add" onclick="adicionarAoCarrinho('${produto.nome}', '${precoFormatado}', '${produto.tamanho}')">+ Adicionar</button>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
 }
 
-function setUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function currentUser() {
-  const user = localStorage.getItem(CURRENT_USER_KEY);
-  return user ? JSON.parse(user) : null;
-}
-
-function setCurrentUser(user) {
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-}
-
-function clearCurrentUser() {
-  localStorage.removeItem(CURRENT_USER_KEY);
-}
-
-function redirectIfNotLogged(target = 'login.html') {
-  if (!currentUser()) {
-    window.location.href = target;
-    return true;
-  }
-  return false;
-}
-
-function redirectIfNotAdmin() {
-  const user = currentUser();
-  if (!user || user.tipo !== 'gerente') {
-    window.location.href = 'login.html';
-    return true;
-  }
-  return false;
-}
-
-function renderUserNav() {
-  const user = currentUser();
-  const navPedidos = document.getElementById('nav-pedidos');
-  const navAdmin = document.getElementById('nav-admin');
-  const navUsuario = document.getElementById('nav-usuario');
-  const btnLogin = document.getElementById('btn-login-nav');
-  const usuarioNome = document.getElementById('usuario-nome');
-
-  if (!user) {
-    if (navPedidos) navPedidos.style.display = 'none';
-    if (navAdmin) navAdmin.style.display = 'none';
-    if (navUsuario) navUsuario.style.display = 'none';
-    if (btnLogin) btnLogin.style.display = 'inline-block';
-    return;
-  }
-
-  if (navUsuario) navUsuario.style.display = 'flex';
-  if (btnLogin) btnLogin.style.display = 'none';
-
-  if (usuarioNome) usuarioNome.textContent = user.nome.split(' ')[0];
-
-  if (user.tipo === 'cliente') {
-    if (navPedidos) navPedidos.style.display = 'block';
-    if (navAdmin) navAdmin.style.display = 'none';
-  }
-
-  if (user.tipo === 'gerente') {
-    if (navPedidos) navPedidos.style.display = 'block';
-    if (navAdmin) navAdmin.style.display = 'block';
-  }
-}
-
-function setupAuthEvents() {
-  const logoutBtn = document.getElementById('btn-logout');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', function () {
-      clearCurrentUser();
-      window.location.href = 'index.html';
-    });
-  }
-
-  const logoutBtnPage = document.getElementById('btnSair');
-  if (logoutBtnPage) {
-    logoutBtnPage.addEventListener('click', function () {
-      clearCurrentUser();
-      window.location.href = 'index.html';
-    });
-  }
-
-  const loginForm = document.getElementById('loginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const senha = document.getElementById('loginSenha').value.trim();
-
-      if (!email || !senha) {
-        alert('Preencha e-mail e senha.');
-        return;
-      }
-
-      const users = getUsers();
-      const found = users.find((u) => u.email === email && u.senha === senha);
-      if (!found) {
-        alert('Credenciais inválidas.');
-        return;
-      }
-
-      setCurrentUser(found);
-      if (found.tipo === 'gerente') {
-        window.location.href = 'administrativo.html';
-      } else {
-        window.location.href = 'pedidos.html';
-      }
-    });
-  }
-
-  const cadastroForm = document.getElementById('cadastroForm');
-  if (cadastroForm) {
-    cadastroForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const nome = document.getElementById('cadNome').value.trim();
-      const email = document.getElementById('cadEmail').value.trim();
-      const senha = document.getElementById('cadSenha').value.trim();
-
-      if (!nome || !email || !senha) {
-        alert('Preencha todos os campos.');
-        return;
-      }
-
-      const users = getUsers();
-      const exists = users.some((u) => u.email === email);
-      if (exists) {
-        alert('Este e-mail já está cadastrado.');
-        return;
-      }
-
-      const novoUsuario = {
-        id: Date.now(),
-        nome,
-        email,
-        senha,
-        tipo: 'cliente'
-      };
-
-      users.push(novoUsuario);
-      setUsers(users);
-      setCurrentUser(novoUsuario);
-      alert('Cadastro realizado com sucesso!');
-      window.location.href = 'pedidos.html';
-    });
-  }
-
-  const tabs = document.querySelectorAll('.tab-btn');
-  tabs.forEach((button) => {
-    button.addEventListener('click', function () {
-      const target = this.dataset.tab;
-      document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
+function setupFiltros() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const filtro = this.getAttribute('data-filter');
+      
+      filterButtons.forEach(btn => btn.classList.remove('active'));
       this.classList.add('active');
-
-      document.getElementById('loginForm').classList.toggle('active', target === 'login');
-      document.getElementById('cadastroForm').classList.toggle('active', target === 'cadastro');
+      
+      const cards = document.querySelectorAll('.produto-card');
+      cards.forEach(card => {
+        const categoria = card.getAttribute('data-categoria');
+        
+        if (filtro === 'todos' || categoria === filtro) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
     });
   });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  renderUserNav();
-  setupAuthEvents();
-});
+function setupCarrinho() {
+  const btnFinalizarCompra = document.getElementById('btnFinalizarCompra');
+  const btnConfirmarPagamento = document.getElementById('btnConfirmarPagamento');
+  
+  if (btnFinalizarCompra) {
+    btnFinalizarCompra.addEventListener('click', function() {
+      const carrinhoModal = bootstrap.Modal.getInstance(document.getElementById('carrinhoModal'));
+      if (carrinhoModal) carrinhoModal.hide();
+      
+      // Fechar o modal anterior
+      setTimeout(() => {
+        abrirFormularioPagamento();
+      }, 300);
+    });
+  }
+  
+  if (btnConfirmarPagamento) {
+    btnConfirmarPagamento.addEventListener('click', function() {
+      if (validarFormulario()) {
+        confirmarPagamento();
+      }
+    });
+  }
+}
+
+function adicionarAoCarrinho(nome, preco, tamanho) {
+  if (carrinhoGlobal) {
+    carrinhoGlobal.adicionarItem(nome, preco, tamanho);
+  }
+}
+
+function abrirFormularioPagamento() {
+  // Atualizar resumo do pedido
+  const resumoPedido = document.getElementById('resumoPedido');
+  const totalPagamento = document.getElementById('totalPagamento');
+  
+  let html = '';
+  carrinhoGlobal.itens.forEach(item => {
+    html += `
+      <div class="d-flex justify-content-between mb-2">
+        <span>${item.nome} (${item.quantidade}x)</span>
+        <span>R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+      </div>
+    `;
+  });
+  
+  resumoPedido.innerHTML = html;
+  const total = carrinhoGlobal.obterTotal();
+  totalPagamento.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+  
+  // Abrir modal de pagamento
+  const modal = new bootstrap.Modal(document.getElementById('confirmacaoPagamentoModal'));
+  modal.show();
+}
+
+function validarFormulario() {
+  const nome = document.getElementById('nomeCliente').value.trim();
+  const email = document.getElementById('emailCliente').value.trim();
+  const telefone = document.getElementById('telefoneCliente').value.trim();
+  const endereco = document.getElementById('enderecoCliente').value.trim();
+  const cep = document.getElementById('cepCliente').value.trim();
+  
+  if (!nome || !email || !telefone || !endereco || !cep) {
+    alert('Por favor, preencha todos os campos obrigatórios!');
+    return false;
+  }
+  
+  // Validação básica de email
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regexEmail.test(email)) {
+    alert('Por favor, insira um email válido!');
+    return false;
+  }
+  
+  return true;
+}
+
+function confirmarPagamento() {
+  const nome = document.getElementById('nomeCliente').value;
+  const email = document.getElementById('emailCliente').value;
+  const telefone = document.getElementById('telefoneCliente').value;
+  const endereco = document.getElementById('enderecoCliente').value;
+  const complemento = document.getElementById('complementoCliente').value;
+  const cep = document.getElementById('cepCliente').value;
+  const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+  
+  // Gerar número de pedido
+  const numeroPedido = 'PED-' + Date.now();
+  
+  // Preparar dados do pedido
+  const pedido = {
+    numeroPedido,
+    cliente: {
+      nome,
+      email,
+      telefone,
+      endereco,
+      complemento,
+      cep
+    },
+    itens: carrinhoGlobal.itens,
+    total: carrinhoGlobal.obterTotal(),
+    metodoPagamento: pagamento,
+    data: new Date().toLocaleString('pt-BR')
+  };
+  
+  // Salvar pedido no localStorage
+  let pedidos = localStorage.getItem('pedidos-cafe');
+  pedidos = pedidos ? JSON.parse(pedidos) : [];
+  pedidos.push(pedido);
+  localStorage.setItem('pedidos-cafe', JSON.stringify(pedidos));
+  
+  // Log do pedido (simulação de envio)
+  console.log('Pedido confirmado:', pedido);
+  
+  // Fechar modal de pagamento
+  const modalPagamento = bootstrap.Modal.getInstance(document.getElementById('confirmacaoPagamentoModal'));
+  if (modalPagamento) modalPagamento.hide();
+  
+  // Mostrar modal de sucesso
+  setTimeout(() => {
+    document.getElementById('numPedido').textContent = numeroPedido;
+    const modalSucesso = new bootstrap.Modal(document.getElementById('sucessoModal'));
+    modalSucesso.show();
+    
+    // Limpar carrinho
+    carrinhoGlobal.limpar();
+    
+    // Limpar formulário
+    document.getElementById('nomeCliente').value = '';
+    document.getElementById('emailCliente').value = '';
+    document.getElementById('telefoneCliente').value = '';
+    document.getElementById('enderecoCliente').value = '';
+    document.getElementById('complementoCliente').value = '';
+    document.getElementById('cepCliente').value = '';
+  }, 300);
+}
+
+// Estilo para notificações
+const style = document.createElement('style');
+style.textContent = `
+  .toast-notificacao {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--coffee);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    animation: slideIn 0.3s ease;
+    z-index: 9999;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`;
+document.head.appendChild(style);

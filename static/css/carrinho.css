@@ -1,0 +1,144 @@
+:root {
+  --coffee-dark: #2d1d18;
+  --coffee: #8b4e35;
+  --coffee-light: #b97955;
+  --cream: #f8f3ed;
+  --cream-dark: #eee3d7;
+  --text: #40322c;
+  --muted: #867871;
+  --white: #ffffff;
+  --shadow: 0 20px 60px rgba(67, 42, 29, 0.12);
+}
+
+.carrinho-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  gap: 15px;
+}
+
+.carrinho-item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-nome {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+
+.item-preco {
+  color: var(--coffee);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.item-quantidade {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream-dark);
+  border-radius: 20px;
+  padding: 4px 8px;
+}
+
+.item-quantidade button {
+  background: none;
+  border: none;
+  color: var(--coffee);
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 4px;
+}
+
+.item-quantidade button:hover {
+  color: var(--coffee-dark);
+}
+
+.item-quantidade span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.btn-remover {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.2s;
+}
+
+.btn-remover:hover {
+  color: #c82333;
+  transform: scale(1.1);
+}
+
+.carrinho-vazio {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.carrinho-vazio i {
+  font-size: 3rem;
+  color: var(--muted);
+  margin-bottom: 15px;
+}
+
+.modal-content {
+  border-radius: 15px;
+  border: none;
+  box-shadow: var(--shadow);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 20px;
+}
+
+.modal-header .modal-title {
+  font-family: 'Playfair Display', serif;
+  color: var(--coffee-dark);
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--cream-dark);
+  padding: 20px;
+}
+
+#carrinhoConteudo {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 3px 6px !important;
+}
+
+@media (max-width: 576px) {
+  .carrinho-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-info {
+    width: 100%;
+  }
+
+  .item-quantidade {
+    align-self: flex-end;
+  }
+}
