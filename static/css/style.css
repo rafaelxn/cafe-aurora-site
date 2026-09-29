@@ -328,10 +328,6 @@ button, input, select, textarea { font-family: inherit; }
   }
 }
 
-@media (max-width: 768px) {
-  .footer-bottom { flex-direction: column; }
-}
-
 @media (max-width: 576px) {
   .hero-section {
     padding: 70px 0;
