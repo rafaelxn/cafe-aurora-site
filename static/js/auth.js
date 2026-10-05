@@ -1,62 +1,154 @@
-body {
-  background: #f8f3ed;
+document.addEventListener('DOMContentLoaded', function() {
+  atualizarNavegacao();
+
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', function(e) {
+      e.preventDefault();
+      fazerLogout();
+    });
+  }
+
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  tabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const tabName = this.getAttribute('data-tab');
+      mostrarTab(tabName);
+    });
+  });
+
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      processarLogin();
+    });
+  }
+
+  const cadastroForm = document.getElementById('cadastroForm');
+  if (cadastroForm) {
+    cadastroForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      processarCadastro();
+    });
+  }
+});
+
+function mostrarTab(tabName) {
+  const forms = document.querySelectorAll('.auth-form');
+  forms.forEach(form => form.classList.remove('active'));
+
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+
+  const formId = tabName === 'login' ? 'loginForm' : 'cadastroForm';
+  const form = document.getElementById(formId);
+  if (form) form.classList.add('active');
+
+  const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+  if (activeButton) activeButton.classList.add('active');
 }
 
-.admin-main {
-  padding-top: 120px;
+function processarLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+
+  if (!email || !senha) {
+    alert('Por favor, preencha todos os campos');
+    return;
+  }
+
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  const usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
+
+  if (usuarioEncontrado) {
+    localStorage.setItem('usuarioAtual', JSON.stringify({
+      id: usuarioEncontrado.id,
+      nome: usuarioEncontrado.nome,
+      email: usuarioEncontrado.email
+    }));
+
+    window.location.href = 'pedidos.html';
+  } else {
+    alert('E-mail ou senha incorretos');
+  }
 }
 
-.admin-header {
-  padding: 30px 0 20px;
+function processarCadastro() {
+  const nome = document.getElementById('cadNome').value.trim();
+  const email = document.getElementById('cadEmail').value.trim();
+  const senha = document.getElementById('cadSenha').value;
+
+  if (!nome || !email || !senha) {
+    alert('Por favor, preencha todos os campos');
+    return;
+  }
+
+  if (senha.length < 6) {
+    alert('A senha deve ter no mínimo 6 caracteres');
+    return;
+  }
+
+  const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+  if (usuarios.some(u => u.email === email)) {
+    alert('Este e-mail já está cadastrado');
+    return;
+  }
+
+  const novoUsuario = {
+    id: Date.now(),
+    nome: nome,
+    email: email,
+    senha: senha,
+    dataCriacao: new Date().toISOString()
+  };
+
+  usuarios.push(novoUsuario);
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  localStorage.setItem('usuarioAtual', JSON.stringify({
+    id: novoUsuario.id,
+    nome: novoUsuario.nome,
+    email: novoUsuario.email
+  }));
+
+  alert('Conta criada com sucesso!');
+  window.location.href = 'pedidos.html';
 }
 
-.admin-header h1 {
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
-  color: var(--coffee-dark);
+function atualizarNavegacao() {
+  const usuarioAtual = JSON.parse(localStorage.getItem('usuarioAtual'));
+  const navLogin = document.getElementById('btn-login-nav');
+  const navUsuario = document.getElementById('nav-usuario');
+  const navPedidos = document.getElementById('nav-pedidos');
+  const navAdmin = document.getElementById('nav-admin');
+  const usuarioNome = document.getElementById('usuario-nome');
+
+  if (usuarioAtual) {
+    if (navLogin) navLogin.style.display = 'none';
+    if (navUsuario) navUsuario.style.display = 'flex';
+    if (navPedidos) navPedidos.style.display = 'block';
+    if (usuarioNome) usuarioNome.textContent = usuarioAtual.nome.split(' ')[0];
+  } else {
+    if (navLogin) navLogin.style.display = 'block';
+    if (navUsuario) navUsuario.style.display = 'none';
+    if (navPedidos) navPedidos.style.display = 'none';
+    if (navAdmin) navAdmin.style.display = 'none';
+  }
 }
 
-.admin-container {
-  padding: 20px 0 90px;
+function fazerLogout() {
+  if (confirm('Tem certeza que deseja sair?')) {
+    localStorage.removeItem('usuarioAtual');
+    atualizarNavegacao();
+    window.location.href = 'index.html';
+  }
 }
 
-.tabs-admin {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.admin-tab {
-  border: none;
-  padding: 12px 18px;
-  border-radius: 999px;
-  background: var(--white);
-  color: var(--coffee-dark);
-  font-weight: 700;
-  cursor: pointer;
-}
-.admin-tab.active {
-  background: var(--coffee);
-  color: var(--white);
+function verificarLogin() {
+  const usuarioAtual = JSON.parse(localStorage.getItem('usuarioAtual'));
+  if (!usuarioAtual && window.location.pathname.includes('pedidos.html')) {
+    window.location.href = 'login.html';
+  }
 }
 
-.admin-pedidos {
-  display: grid;
-  gap: 18px;
-}
-
-.admin-card {
-  background: var(--white);
-  border: 1px solid var(--cream-dark);
-  border-radius: 18px;
-  padding: 22px;
-}
-.admin-card h3 {
-  color: var(--coffee-dark);
-  margin-bottom: 12px;
-}
-.admin-card p {
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.admin-card button {
-  margin-top: 16px;
-}
+verificarLogin();

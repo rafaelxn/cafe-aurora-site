@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Favicon Café Aurora">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f9f3ee"/>
+      <stop offset="100%" stop-color="#e9d7c3"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <path d="M22 22h20c3 0 6 2 6 6v9c0 7-5 12-12 12h-8c-7 0-12-5-12-12v-9c0-4 3-6 6-6Z" fill="#6f4028"/>
+  <path d="M18 26h30v6c0 7-5 12-12 12h-6c-7 0-12-5-12-12v-6Z" fill="#c78452"/>
+  <path d="M18 25h30" stroke="#fff7f0" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M48 28h4c3 0 5 2 5 5s-2 5-5 5h-4" fill="none" stroke="#6f4028" stroke-width="3" stroke-linecap="round"/>
+  <path d="M26 16c-2 3-3 5-3 7" fill="none" stroke="#533522" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M32 14c-2 4-3 7-3 10" fill="none" stroke="#533522" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M38 16c-2 4-3 7-3 10" fill="none" stroke="#533522" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="22" cy="22" r="2.2" fill="#f8d9b0"/>
+  <circle cx="42" cy="22" r="2.2" fill="#f8d9b0"/>
+</svg>
