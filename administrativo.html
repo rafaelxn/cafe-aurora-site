@@ -59,7 +59,8 @@
 
     <div class="container admin-container">
       <div class="tabs-admin">
-        <button class="admin-tab active" data-status="em_atendimento">Em atendimento</button>
+        <button class="admin-tab active" data-status="pendente">Pendentes</button>
+        <button class="admin-tab" data-status="em_atendimento">Em atendimento</button>
         <button class="admin-tab" data-status="finalizado">Finalizados</button>
       </div>
       <div id="adminPedidos" class="admin-pedidos"></div>
@@ -89,7 +90,8 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.8.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="./static/js/api.js"></script>
   <script src="./static/js/auth.js"></script>
   <script src="./static/js/administrativo.js"></script>
 </body>

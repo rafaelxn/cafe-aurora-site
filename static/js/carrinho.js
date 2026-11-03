@@ -1,147 +1,54 @@
 class Carrinho {
-  constructor() {
-    this.itens = [];
-    this.carregarDados();
-    this.atualizarBadge();
-  }
-
-  adicionarItem(nome, preco, tamanho) {
-    const precoNum = parseFloat(preco.toString().replace('R$', '').replace(',', '.'));
-    
-    const itemExistente = this.itens.find(item => item.nome === nome);
-    
-    if (itemExistente) {
-      itemExistente.quantidade++;
-    } else {
-      this.itens.push({
-        nome,
-        preco: precoNum,
-        tamanho,
-        quantidade: 1
-      });
-    }
-    
-    this.salvarDados();
-    this.atualizarBadge();
-    this.mostrarNotificacao(`${nome} adicionado ao carrinho!`);
-  }
-
-  removerItem(index) {
-    this.itens.splice(index, 1);
-    this.salvarDados();
-    this.atualizarBadge();
-  }
-
-  alterarQuantidade(index, quantidade) {
-    if (quantidade > 0) {
-      this.itens[index].quantidade = quantidade;
-      this.salvarDados();
-      this.atualizarBadge();
-    }
-  }
-
-  obterTotal() {
-    return this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
-  }
-
-  obterQuantidadeTotal() {
-    return this.itens.reduce((total, item) => total + item.quantidade, 0);
-  }
-
-  limpar() {
-    this.itens = [];
-    this.salvarDados();
-    this.atualizarBadge();
-  }
-
-  salvarDados() {
-    localStorage.setItem('carrinho-cafe', JSON.stringify(this.itens));
-  }
-
-  carregarDados() {
-    const dados = localStorage.getItem('carrinho-cafe');
-    if (dados) {
-      this.itens = JSON.parse(dados);
-    }
-  }
-
-  atualizarBadge() {
-    const badge = document.getElementById('cartBadge');
-    const quantidade = this.obterQuantidadeTotal();
-    
-    if (badge) {
-      if (quantidade > 0) {
-        badge.textContent = quantidade;
-        badge.style.display = 'block';
-      } else {
-        badge.style.display = 'none';
-      }
-    }
-  }
-
-  mostrarNotificacao(mensagem) {
-    // Toast simplificado
-    const toast = document.createElement('div');
-    toast.className = 'toast-notificacao';
-    toast.textContent = mensagem;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.remove();
-    }, 2000);
-  }
+ constructor(){
+  try{this.itens=JSON.parse(localStorage.getItem('carrinho-cafe'))||[];}
+  catch(e){this.itens=[];}
+  if(!Array.isArray(this.itens))this.itens=[];
+  this.itens=this.itens.filter(i=>Number.isSafeInteger(i.id)&&i.id>0&&Number.isSafeInteger(i.quantidade)&&i.quantidade>0&&i.quantidade<=99&&Number.isFinite(i.preco)&&i.preco>=0);
+  this.update();
+ }
+ add(product){
+  const item=this.itens.find(i=>i.id===product.id);
+  if(item)item.quantidade=Math.min(99,item.quantidade+1);
+  else this.itens.push({id:product.id,nome:product.nome,preco:Number(product.preco),tamanho:product.tamanho,quantidade:1});
+  this.update();
+ }
+ remove(id){this.itens=this.itens.filter(i=>i.id!==id);this.update();}
+ change(id,step){
+  const item=this.itens.find(i=>i.id===id);if(!item)return;
+  item.quantidade=Math.min(99,item.quantidade+step);
+  if(item.quantidade<=0)this.remove(id);else this.update();
+ }
+ clear(){this.itens=[];this.update();}
+ total(){return this.itens.reduce((a,i)=>a+i.preco*i.quantidade,0);}
+ update(){
+  localStorage.setItem('carrinho-cafe',JSON.stringify(this.itens));
+  const badge=document.getElementById('cartBadge');
+  if(badge){const count=this.itens.reduce((a,i)=>a+i.quantidade,0);badge.textContent=count;badge.style.display=count?'block':'none';}
+ }
+ render(){
+  const target=document.getElementById('carrinhoConteudo');
+  const total=document.getElementById('totalCarrinho');
+  const button=document.getElementById('btnFinalizarCompra');
+  if(!target)return;
+  target.innerHTML=this.itens.length?this.itens.map(i=>
+   '<div class="d-flex justify-content-between align-items-center border-bottom py-2"><div><strong>'+escapeHtml(i.nome)+
+   '</strong><div>'+money(i.preco)+' × '+i.quantidade+'</div></div><div><button class="btn btn-sm btn-outline-secondary" data-step="-1" data-id="'+i.id+'">−</button> '+
+   i.quantidade+' <button class="btn btn-sm btn-outline-secondary" data-step="1" data-id="'+i.id+'">+</button> <button class="btn btn-sm btn-outline-danger" data-remove="'+i.id+'">Remover</button></div></div>').join('')
+   :'<p>Seu carrinho está vazio.</p>';
+  total.textContent=money(this.total());button.disabled=!this.itens.length;
+ }
 }
-
-// Instância global do carrinho
 let carrinhoGlobal;
-
-document.addEventListener('DOMContentLoaded', function() {
-  carrinhoGlobal = new Carrinho();
-  
-  // Botão do carrinho
-  const btnCarrinho = document.getElementById('btnCarrinho');
-  if (btnCarrinho) {
-    btnCarrinho.addEventListener('click', function() {
-      mostrarCarrinho();
-    });
-  }
+document.addEventListener('DOMContentLoaded',()=>{
+ carrinhoGlobal=new Carrinho();
+ document.getElementById('btnCarrinho')?.addEventListener('click',()=>{
+  carrinhoGlobal.render();bootstrap.Modal.getOrCreateInstance(document.getElementById('carrinhoModal')).show();
+ });
+ document.getElementById('carrinhoConteudo')?.addEventListener('click',e=>{
+  const change=e.target.closest('[data-step]');
+  const remove=e.target.closest('[data-remove]');
+  if(change)carrinhoGlobal.change(Number(change.dataset.id),Number(change.dataset.step));
+  if(remove)carrinhoGlobal.remove(Number(remove.dataset.remove));
+  carrinhoGlobal.render();
+ });
 });
-
-function mostrarCarrinho() {
-  const conteudo = document.getElementById('carrinhoConteudo');
-  const totalCarrinho = document.getElementById('totalCarrinho');
-  const btnFinalizarCompra = document.getElementById('btnFinalizarCompra');
-  
-  if (carrinhoGlobal.itens.length === 0) {
-    conteudo.innerHTML = '<div class="carrinho-vazio"><i class="fas fa-shopping-cart"></i><p class="text-muted mt-3">Seu carrinho está vazio</p></div>';
-    btnFinalizarCompra.disabled = true;
-  } else {
-    let html = '';
-    carrinhoGlobal.itens.forEach((item, index) => {
-      html += `
-        <div class="carrinho-item">
-          <div class="item-info">
-            <div class="item-nome">${item.nome}</div>
-            <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
-            <div class="text-muted" style="font-size: 0.85rem;">${item.tamanho}</div>
-          </div>
-          <div class="item-quantidade">
-            <button onclick="carrinhoGlobal.alterarQuantidade(${index}, ${item.quantidade - 1}); mostrarCarrinho();">−</button>
-            <span>${item.quantidade}</span>
-            <button onclick="carrinhoGlobal.alterarQuantidade(${index}, ${item.quantidade + 1}); mostrarCarrinho();">+</button>
-          </div>
-          <div>R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</div>
-          <button class="btn-remover" onclick="carrinhoGlobal.removerItem(${index}); mostrarCarrinho();">×</button>
-        </div>
-      `;
-    });
-    conteudo.innerHTML = html;
-    totalCarrinho.textContent = 'R$ ' + carrinhoGlobal.obterTotal().toFixed(2).replace('.', ',');
-    btnFinalizarCompra.disabled = false;
-  }
-  
-  const modal = new bootstrap.Modal(document.getElementById('carrinhoModal'));
-  modal.show();
-}
-
-window.mostrarCarrinho = mostrarCarrinho;

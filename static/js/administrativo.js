@@ -1,59 +1,34 @@
-const statusLabels = {
-  pendente: 'Pendente',
-  em_atendimento: 'Em atendimento',
-  finalizado: 'Finalizado'
-};
-
-function renderAdminPedidos(status = 'em_atendimento') {
-  if (redirectIfNotAdmin()) return;
-
-  const pedidos = JSON.parse(localStorage.getItem('cafe_aurora_pedidos')) || [];
-  const container = document.getElementById('adminPedidos');
-
-  const filtrados = pedidos.filter((pedido) => pedido.status === status);
-  if (!container) return;
-
-  if (!filtrados.length) {
-    container.innerHTML = '<div class="empty-pedidos"><h3>Nenhum pedido nesta categoria.</h3></div>';
-    return;
-  }
-
-  container.innerHTML = filtrados.map((pedido) => `
-    <article class="admin-card">
-      <h3>Pedido #${pedido.id}</h3>
-      <p><strong>Cliente:</strong> ${pedido.clienteNome}</p>
-      <p><strong>Atendimento:</strong> ${pedido.tipoAtendimento}</p>
-      <p><strong>Status:</strong> ${statusLabels[pedido.status]}</p>
-      <p><strong>Itens:</strong> ${pedido.itens.map((item) => `${item.quantidade}x ${item.nome}`).join(', ')}</p>
-      <p><strong>Total:</strong> R$ ${pedido.total.toFixed(2).replace('.', ',')}</p>
-      ${status === 'em_atendimento' ? '<button class="btn btn-coffee" data-finalizar="'+pedido.id+'">Finalizar</button>' : ''}
-    </article>
-  `).join('');
-
-  document.querySelectorAll('[data-finalizar]').forEach((btn) => {
-    btn.addEventListener('click', function () {
-      const id = Number(this.dataset.finalizar);
-      const pedidosData = JSON.parse(localStorage.getItem('cafe_aurora_pedidos')) || [];
-      const updated = pedidosData.map((pedido) => {
-        if (pedido.id === id) pedido.status = 'finalizado';
-        return pedido;
-      });
-      localStorage.setItem('cafe_aurora_pedidos', JSON.stringify(updated));
-      renderAdminPedidos('em_atendimento');
-    });
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  if (redirectIfNotAdmin()) return;
-
-  renderAdminPedidos('em_atendimento');
-
-  document.querySelectorAll('.admin-tab').forEach((tab) => {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.admin-tab').forEach((item) => item.classList.remove('active'));
-      this.classList.add('active');
-      renderAdminPedidos(this.dataset.status);
-    });
-  });
+document.addEventListener('DOMContentLoaded',async()=>{
+ const user=await userReady;if(!user||user.role!=='ADMIN')return;
+ const root=document.getElementById('adminPedidos');
+ const names={pendente:'Pendentes',em_atendimento:'Em atendimento',finalizado:'Finalizados'};
+ let orders=[];
+ let status='pendente';
+ async function load(){
+  try{orders=await Api.get('/api/admin/orders');render();}
+  catch(e){root.textContent=e.message;}
+ }
+ function render(){
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.status===status));
+  const filtered=orders.filter(o=>o.status===status);
+  root.innerHTML=filtered.length?filtered.map(p=>
+   '<article class="admin-card"><h3>Pedido #'+p.id+'</h3>'+
+   '<p><strong>Cliente:</strong> '+escapeHtml(p.clienteNome)+'</p>'+
+   '<p><strong>Telefone:</strong> '+escapeHtml(p.telefone)+'</p>'+
+   '<p><strong>Endereço:</strong> '+escapeHtml(p.endereco)+'</p>'+
+   '<p><strong>Status:</strong> '+names[p.status]+'</p>'+
+   '<p><strong>Itens:</strong> '+p.itens.map(i=>i.quantidade+'x '+escapeHtml(i.nome)).join(', ')+'</p>'+
+   '<p><strong>Total:</strong> '+money(p.total)+'</p>'+
+   (status==='finalizado'?'':'<button class="btn btn-coffee" data-id="'+p.id+'"> '+(status==='pendente'?'Iniciar atendimento':'Finalizar')+'</button>')+
+   '</article>').join(''):'<p>Nenhum pedido nesta categoria.</p>';
+ }
+ document.querySelectorAll('.admin-tab').forEach(b=>b.addEventListener('click',()=>{status=b.dataset.status;render();}));
+ root.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-id]');if(!b)return;
+  b.disabled=true;
+  try{await Api.patch('/api/admin/orders/'+b.dataset.id+'/status',
+   {status:status==='pendente'?'em_atendimento':'finalizado'});await load();}
+  catch(err){announce(err.message);b.disabled=false;}
+ });
+ await load();
 });
