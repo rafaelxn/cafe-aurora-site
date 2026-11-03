@@ -1,9 +1,161 @@
-/* Histórico de pedidos */
-.pedidos-main{min-height:65vh;background:#faf7f3;padding-bottom:4rem}
-.pedidos-header{background:#f1e7dc;padding:3rem 0}
-.pedidos-container{padding-top:2rem}
-.lista-pedidos{max-width:900px;margin:auto}
-.lista-pedidos .card{border:1px solid #e9ddcf;border-radius:14px;box-shadow:0 3px 12px #00000008}
-.lista-pedidos .card-body{padding:1.5rem}
-.lista-pedidos h3{color:#583827}
-@media(max-width:600px){.pedidos-header{padding:2rem 0}.lista-pedidos .card-body{padding:1rem}}
+/* Histórico do cliente */
+.pedidos-main {
+  min-height: 70vh;
+  background: var(--cream);
+  padding-bottom: 90px;
+}
+
+.pedidos-header {
+  background: linear-gradient(110deg, #f3e8dd, #fcf7f2);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 64px 0 52px;
+}
+
+.pedidos-header h1 {
+  color: var(--coffee-dark);
+  font-size: clamp(2.1rem, 4.5vw, 3.5rem);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.pedidos-header h1 span {
+  color: var(--coffee);
+  font-style: italic;
+}
+
+.pedidos-header .eyebrow {
+  margin-bottom: 9px;
+}
+
+.pedidos-header .btn-outline-coffee {
+  margin-top: 16px;
+}
+
+.pedidos-container {
+  padding-top: 38px;
+}
+
+.lista-pedidos {
+  display: grid;
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.pedido-card {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 12px 32px rgba(67, 42, 29, 0.06);
+  overflow-wrap: anywhere;
+}
+
+.pedido-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.pedido-top h3 {
+  color: var(--coffee-dark);
+  font-size: 1.45rem;
+  margin: 0;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 13px;
+  text-transform: uppercase;
+}
+
+.status-badge.pendente {
+  background: #fff1d4;
+  color: #8c6100;
+}
+
+.status-badge.em_atendimento {
+  background: #dfefff;
+  color: #185d97;
+}
+
+.status-badge.finalizado {
+  background: #def6e6;
+  color: #18773c;
+}
+
+.pedido-meta {
+  display: flex;
+  gap: 12px 22px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 17px;
+}
+
+.pedido-produtos {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.pedido-produtos li {
+  border-bottom: 1px solid var(--cream-dark);
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.pedido-produtos li:last-child {
+  border-bottom: none;
+}
+
+.pedido-total {
+  color: var(--coffee-dark);
+  font-size: 1.14rem;
+  font-weight: 700;
+  text-align: right;
+  border-top: 1px solid var(--cream-dark);
+  padding-top: 16px;
+}
+
+.empty-pedidos {
+  background: var(--white);
+  border: 1px dashed #dfd2c7;
+  border-radius: 18px;
+  color: var(--muted);
+  padding: 42px 24px;
+  text-align: center;
+}
+
+.empty-pedidos a {
+  color: var(--coffee);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .pedidos-header {
+    padding: 42px 0 34px;
+  }
+
+  .pedidos-header .text-md-end {
+    margin-top: 14px;
+  }
+
+  .pedidos-container {
+    padding-top: 24px;
+  }
+
+  .pedido-card {
+    padding: 20px;
+  }
+}

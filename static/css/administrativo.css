@@ -1,89 +1,172 @@
-body {
-  background: #f8f3ed;
+/* Área administrativa: identidade visual alinhada ao restante do Café Aurora. */
+.admin-main {
+  min-height: 70vh;
+  background: var(--cream);
+  padding-bottom: 90px;
 }
 
-.pedidos-main {
-  padding-top: 120px;
+.admin-header {
+  background: linear-gradient(115deg, #f3e8dd, #fbf6f0);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 64px 0 54px;
 }
 
-.pedidos-header {
-  padding: 30px 0 20px;
-}
-
-.pedidos-header h1 {
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
+.admin-header h1 {
   color: var(--coffee-dark);
-}
-
-.pedidos-header h1 span {
-  color: var(--coffee);
-  font-style: italic;
-}
-
-.pedidos-container {
-  padding: 20px 0 90px;
-}
-
-.lista-pedidos {
-  display: grid;
-  gap: 18px;
-}
-
-.pedido-card {
-  background: var(--white);
-  border: 1px solid var(--cream-dark);
-  border-radius: 18px;
-  padding: 22px;
-  box-shadow: 0 10px 24px rgba(67, 42, 29, 0.04);
-}
-.pedido-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 15px;
-}
-.pedido-top h3 {
-  color: var(--coffee-dark);
+  font-size: clamp(2.1rem, 4.5vw, 3.6rem);
+  line-height: 1.15;
   margin: 0;
 }
-.status-badge {
-  display: inline-block;
-  padding: 8px 12px;
+
+.admin-header .eyebrow {
+  margin-bottom: 8px;
+}
+
+.admin-header .btn-outline-coffee {
+  margin-top: 18px;
+}
+
+.admin-container {
+  padding-top: 38px;
+}
+
+.tabs-admin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.admin-tab {
+  appearance: none;
+  background: var(--white);
+  border: 1px solid #dfd2c7;
+  border-radius: 999px;
+  color: var(--coffee-dark);
+  cursor: pointer;
+  font-size: 0.93rem;
+  font-weight: 700;
+  padding: 11px 19px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-tab:hover,
+.admin-tab:focus-visible {
+  border-color: var(--coffee);
+  outline-offset: 3px;
+}
+
+.admin-tab.active {
+  background: var(--coffee);
+  border-color: var(--coffee);
+  color: #fff;
+  box-shadow: 0 5px 18px rgba(139, 78, 53, 0.15);
+}
+
+.admin-pedidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 315px), 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-card {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 19px;
+  padding: 25px;
+  box-shadow: 0 12px 32px rgba(67, 42, 29, 0.06);
+  overflow-wrap: anywhere;
+}
+
+.admin-card h3 {
+  color: var(--coffee-dark);
+  font-size: 1.36rem;
+  margin-bottom: 18px;
+}
+
+.admin-card p {
+  color: var(--text);
+  font-size: 0.93rem;
+  margin-bottom: 10px;
+}
+
+.admin-card strong {
+  color: var(--coffee-dark);
+}
+
+.admin-card .btn-coffee {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.admin-card .status-badge {
+  display: inline-flex;
+  padding: 5px 11px;
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
 }
-.status-badge.pendente { background: #fff2d4; color: #a67600; }
-.status-badge.em_atendimento { background: #dfeeff; color: #1a5db0; }
-.status-badge.finalizado { background: #dff7e7; color: #1d8f43; }
 
-.pedido-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  color: var(--muted);
-  font-size: 0.92rem;
-  margin-bottom: 16px;
+.admin-card .status-badge.pendente {
+  background: #fff1d4;
+  color: #8c6100;
 }
-.pedido-produtos {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  color: var(--text);
+
+.admin-card .status-badge.em_atendimento {
+  background: #e0efff;
+  color: #185d97;
 }
-.pedido-produtos li {
-  padding: 8px 0;
+
+.admin-card .status-badge.finalizado {
+  background: #ddf5e5;
+  color: #176e39;
+}
+
+.admin-card .admin-card-items {
+  border-top: 1px solid var(--cream-dark);
   border-bottom: 1px solid var(--cream-dark);
+  padding: 13px 0;
+  margin: 16px 0;
 }
-.pedido-produtos li:last-child { border-bottom: none; }
 
-.empty-pedidos {
+.empty-pedidos,
+.admin-notice {
+  grid-column: 1 / -1;
   background: var(--white);
-  border-radius: 16px;
-  padding: 40px 20px;
-  text-align: center;
+  border: 1px dashed #dfd2c7;
+  border-radius: 18px;
   color: var(--muted);
-  border: 1px dashed var(--cream-dark);
+  padding: 44px 24px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 42px 0 34px;
+  }
+
+  .admin-header .text-md-end {
+    margin-top: 14px;
+  }
+
+  .admin-container {
+    padding-top: 25px;
+  }
+
+  .tabs-admin {
+    gap: 8px;
+  }
+
+  .admin-tab {
+    font-size: 0.85rem;
+    padding: 9px 13px;
+  }
+
+  .admin-card {
+    padding: 20px;
+  }
 }

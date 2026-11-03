@@ -3,67 +3,95 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user || user.role !== 'ADMIN') return;
 
   const root = document.getElementById('adminPedidos');
+  if (!root) return;
+
   const labels = {
     pendente: 'Pendente',
     em_atendimento: 'Em atendimento',
     finalizado: 'Finalizado'
   };
   let orders = [];
-  let status = 'pendente';
+  let selectedStatus = 'pendente';
 
   function render() {
     document.querySelectorAll('.admin-tab').forEach(button => {
-      button.classList.toggle('active', button.dataset.status === status);
+      const active = button.dataset.status === selectedStatus;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
     });
 
-    const selected = orders.filter(order => order.status === status);
-    root.innerHTML = selected.length
-      ? selected.map(order => `
+    const filtered = orders.filter(order => order.status === selectedStatus);
+    if (!filtered.length) {
+      root.innerHTML = '<div class="empty-pedidos">Nenhum pedido nesta categoria.</div>';
+      return;
+    }
+
+    root.innerHTML = filtered.map(order => {
+      const nextLabel = selectedStatus === 'pendente'
+        ? 'Iniciar atendimento'
+        : 'Finalizar pedido';
+
+      return `
         <article class="admin-card">
           <h3>Pedido #${order.id}</h3>
+          <p>
+            <span class="status-badge ${order.status}">
+              ${labels[order.status] || escapeHtml(order.status)}
+            </span>
+          </p>
           <p><strong>Cliente:</strong> ${escapeHtml(order.clienteNome)}</p>
           <p><strong>Telefone:</strong> ${escapeHtml(order.telefone)}</p>
           <p><strong>Endereço:</strong> ${escapeHtml(order.endereco)}</p>
-          <p><strong>Status:</strong> ${labels[order.status]}</p>
-          <p><strong>Itens:</strong> ${order.itens.map(
-            item => `${item.quantidade}x ${escapeHtml(item.nome)}`
-          ).join(', ')}</p>
+          <div class="admin-card-items">
+            <strong>Itens:</strong>
+            <ul class="list-unstyled mb-0 mt-2">
+              ${order.itens.map(item => `
+                <li>${item.quantidade}x ${escapeHtml(item.nome)}</li>
+              `).join('')}
+            </ul>
+          </div>
           <p><strong>Total:</strong> ${money(order.total)}</p>
-          ${status === 'finalizado' ? '' : `
-            <button class="btn btn-coffee" data-id="${order.id}">
-              ${status === 'pendente' ? 'Iniciar atendimento' : 'Finalizar'}
+          ${selectedStatus === 'finalizado' ? '' : `
+            <button class="btn btn-coffee" type="button" data-id="${order.id}">
+              ${nextLabel}
             </button>
           `}
         </article>
-      `).join('')
-      : '<p>Nenhum pedido nesta categoria.</p>';
+      `;
+    }).join('');
   }
 
   async function refresh() {
+    root.innerHTML = '<div class="admin-notice">Carregando pedidos...</div>';
     try {
       orders = await Api.get('/api/admin/orders');
       render();
     } catch (error) {
-      root.textContent = error.message;
+      root.innerHTML = `
+        <div class="admin-notice" role="alert">
+          ${escapeHtml(error.message)}
+        </div>
+      `;
     }
   }
 
   document.querySelectorAll('.admin-tab').forEach(button => {
     button.addEventListener('click', () => {
-      status = button.dataset.status;
+      selectedStatus = button.dataset.status;
       render();
     });
   });
 
   root.addEventListener('click', async event => {
-    const button = event.target.closest('[data-id]');
+    const button = event.target.closest('button[data-id]');
     if (!button) return;
 
     button.disabled = true;
+    const status = selectedStatus === 'pendente' ? 'em_atendimento' : 'finalizado';
+
     try {
-      const nextStatus = status === 'pendente' ? 'em_atendimento' : 'finalizado';
       await Api.patch('/api/admin/orders/' + button.dataset.id + '/status', {
-        status: nextStatus
+        status
       });
       await refresh();
     } catch (error) {
