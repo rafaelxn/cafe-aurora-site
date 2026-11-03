@@ -10,6 +10,14 @@ Sistema de cafeteria com frontend HTML/CSS/JavaScript e backend Spring Boot 3.5 
 4. Execute `mvn clean test`, depois `mvn spring-boot:run`.
 5. Abra `http://localhost:8080/`. Não abra os HTML diretamente: a aplicação exige API e banco ativo.
 
+## Visualização estática versus aplicação completa
+
+O repositório mantém os arquivos em `static/css` e `static/js`, com referências `./static/...` nos HTML. Assim o visual carrega ao abrir as páginas diretamente ou em um site estático. O Spring Boot também atende aos mesmos caminhos por meio de `StaticResourcesConfig`.
+
+**GitHub Pages não executa Java, MySQL nem as rotas `/api/**` do Spring Boot.** Se abrir o site no GitHub Pages, pode visualizar o layout, mas login, pedidos e administrativo não funcionarão de verdade. Para testar tudo, execute o backend e abra `http://localhost:8080/` (ou hospede o Spring Boot em um servidor).
+
+Se o administrativo redirecionar para o login mesmo no servidor, confirme que a conta foi criada com `ADMIN_EMAIL` e `ADMIN_PASSWORD` no primeiro início e faça login com ela. Contas de clientes não acessam o painel.
+
 ## Funcionalidades
 - Cadastro e login no servidor, BCrypt, sessão HttpOnly, CSRF e perfis CLIENTE/ADMIN.
 - Cardápio cadastrado no MySQL ao iniciar com banco vazio.

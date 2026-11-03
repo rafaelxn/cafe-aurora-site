@@ -40,6 +40,16 @@ class CafeAuroraTests {
         mvc.perform(get("/js/api.js")).andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("const Api")));
         mvc.perform(get("/css/pedidos.css")).andExpect(status().isOk());
+        mvc.perform(get("/static/js/api.js")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("const Api")));
+        mvc.perform(get("/static/css/pedidos.css")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".pedido-card")));
+        mvc.perform(get("/static/css/administrativo.css")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString(".admin-tab")));
+        mvc.perform(get("/pedidos.html")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("./static/css/pedidos.css")));
+        mvc.perform(get("/administrativo.html")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("./static/css/administrativo.css")));
         mvc.perform(get("/api/products")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", greaterThan(0)));
     }
