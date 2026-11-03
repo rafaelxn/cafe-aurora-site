@@ -40,6 +40,8 @@ class CafeAuroraTests {
         mvc.perform(get("/js/api.js")).andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("const Api")));
         mvc.perform(get("/css/pedidos.css")).andExpect(status().isOk());
+        mvc.perform(get("/static/js/demo-api.js")).andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("CafeDemo")));
         mvc.perform(get("/static/js/api.js")).andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("const Api")));
         mvc.perform(get("/static/css/pedidos.css")).andExpect(status().isOk())
