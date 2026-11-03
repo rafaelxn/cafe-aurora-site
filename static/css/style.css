@@ -718,3 +718,27 @@ button, input, select, textarea {
   color: var(--muted);
   line-height: 1.8;
 }
+
+/* Identifica explicitamente a demonstração sem backend no GitHub Pages. */
+.demo-banner {
+  background: #fff2cf;
+  border-bottom: 1px solid #eacb7d;
+  color: #51341e;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.83rem;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.demo-banner + .site-header {
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .demo-banner {
+    font-size: 0.76rem;
+    padding: 10px 14px;
+  }
+}

@@ -21,5 +21,8 @@ jobs:
       - name: Check JavaScript syntax
         run: find static/js -name '*.js' -print0 | xargs -0 -n1 node --check
 
+      - name: Verify static GitHub Pages demo flows
+        run: node --test tests/demo-api.test.cjs
+
       - name: Build and integration tests
         run: mvn -B clean verify

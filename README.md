@@ -10,13 +10,16 @@ Sistema de cafeteria com frontend HTML/CSS/JavaScript e backend Spring Boot 3.5 
 4. Execute `mvn clean test`, depois `mvn spring-boot:run`.
 5. Abra `http://localhost:8080/`. Não abra os HTML diretamente: a aplicação exige API e banco ativo.
 
-## Visualização estática versus aplicação completa
+## Dois modos de execução
 
-O repositório mantém os arquivos em `static/css` e `static/js`, com referências `./static/...` nos HTML. Assim o visual carrega ao abrir as páginas diretamente ou em um site estático. O Spring Boot também atende aos mesmos caminhos por meio de `StaticResourcesConfig`.
+**1. GitHub Pages (demonstração estática):** abra `https://rafaelxn.github.io/cafe-aurora-site/`.
+O cardápio, cadastro de teste, carrinho, pedidos simulados e painel administrativo são demonstrativos; os dados são salvos somente no navegador. Não existe backend no GitHub Pages, os pedidos não são enviados à cafeteria, não há pagamento real e **as senhas digitadas não são verificadas nem armazenadas**. Use apenas dados fictícios.
 
-**GitHub Pages não executa Java, MySQL nem as rotas `/api/**` do Spring Boot.** Se abrir o site no GitHub Pages, pode visualizar o layout, mas login, pedidos e administrativo não funcionarão de verdade. Para testar tudo, execute o backend e abra `http://localhost:8080/` (ou hospede o Spring Boot em um servidor).
+Para experimentar o painel, entre com `admin@demo.local` e uma senha de teste qualquer. Essa conta é exclusivamente para demonstração local, não equivale a uma conta administrativa segura.
 
-Se o administrativo redirecionar para o login mesmo no servidor, confirme que a conta foi criada com `ADMIN_EMAIL` e `ADMIN_PASSWORD` no primeiro início e faça login com ela. Contas de clientes não acessam o painel.
+**2. Aplicação completa (Spring Boot + MySQL):** configure o banco e execute `mvn spring-boot:run`, acessando `http://localhost:8080/`. Nesse ambiente, o frontend usa `/api/**` e a autenticação real com sessão e BCrypt, e os pedidos são persistidos no MySQL. Para publicar o sistema completo, hospede o backend em servidor próprio (GitHub Pages não executa Java).
+
+Os dois modos usam as mesmas páginas HTML; o adaptador `static/js/demo-api.js` só é ativado em endereços `.github.io` ou na abertura local via `file://`. O backend Spring Boot continua sendo a fonte oficial para uso real.
 
 ## Funcionalidades
 - Cadastro e login no servidor, BCrypt, sessão HttpOnly, CSRF e perfis CLIENTE/ADMIN.

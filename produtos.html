@@ -15,7 +15,7 @@
 <body>
     <!-- Header com navegação -->
     <header class="site-header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="index.html">
                     <span class="brand-icon">☕</span>Café Aurora
@@ -31,8 +31,10 @@
                         <li class="nav-item">
                             <a class="nav-link active" href="produtos.html">Cardápio</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="pedidos.html">Meus Pedidos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="login.html">Minha conta</a></li>
+                        <li class="nav-item" id="nav-pedidos" style="display:none;"><a class="nav-link" href="pedidos.html">Meus Pedidos</a></li>
+                        <li class="nav-item" id="nav-admin" style="display:none;"><a class="nav-link" href="administrativo.html">Administrativo</a></li>
+                        <li class="nav-item"><a class="nav-link" href="login.html" id="btn-login-nav">Minha conta</a></li>
+                        <li class="nav-item" id="nav-usuario" style="display:none;"><button class="btn btn-outline-coffee btn-sm" id="btn-logout" type="button">Sair</button></li>
                         <li class="nav-item">
                             <button class="btn btn-link nav-link position-relative" id="btnCarrinho">
                                 <i class="fas fa-shopping-cart"></i>
@@ -216,7 +218,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="./static/js/produtos-dados.js"></script>
     <script src="./static/js/api.js"></script>
+    <script src="./static/js/demo-api.js"></script>
+    <script src="./static/js/auth.js"></script>
     <script src="./static/js/carrinho.js"></script>
     <script src="./static/js/produtos.js"></script>
 </body>

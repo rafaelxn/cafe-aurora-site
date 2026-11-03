@@ -1,5 +1,10 @@
 const Api = {
   async request(url, method = 'GET', body) {
+    // GitHub Pages hospeda somente arquivos estáticos; usa dados locais de demonstração.
+    if (window.CafeDemo?.enabled) {
+      return window.CafeDemo.request(url, method, body);
+    }
+
     const headers = { Accept: 'application/json' };
     if (body !== undefined) {
       headers['Content-Type'] = 'application/json';
