@@ -1,147 +1,135 @@
 class Carrinho {
   constructor() {
-    this.itens = [];
-    this.carregarDados();
-    this.atualizarBadge();
+    try {
+      this.itens = JSON.parse(localStorage.getItem('carrinho-cafe')) || [];
+    } catch {
+      this.itens = [];
+    }
+
+    if (!Array.isArray(this.itens)) this.itens = [];
+    this.itens = this.itens.filter(item =>
+      Number.isSafeInteger(item?.id) &&
+      item.id > 0 &&
+      Number.isSafeInteger(item.quantidade) &&
+      item.quantidade >= 1 &&
+      item.quantidade <= 99 &&
+      Number.isFinite(item.preco) &&
+      item.preco >= 0
+    );
+    this.update();
   }
 
-  adicionarItem(nome, preco, tamanho) {
-    const precoNum = parseFloat(preco.toString().replace('R$', '').replace(',', '.'));
-    
-    const itemExistente = this.itens.find(item => item.nome === nome);
-    
-    if (itemExistente) {
-      itemExistente.quantidade++;
+  add(product) {
+    const existing = this.itens.find(item => item.id === product.id);
+    if (existing) {
+      existing.quantidade = Math.min(99, existing.quantidade + 1);
     } else {
       this.itens.push({
-        nome,
-        preco: precoNum,
-        tamanho,
+        id: product.id,
+        nome: product.nome,
+        preco: Number(product.preco),
+        tamanho: product.tamanho,
         quantidade: 1
       });
     }
-    
-    this.salvarDados();
-    this.atualizarBadge();
-    this.mostrarNotificacao(`${nome} adicionado ao carrinho!`);
+    this.update();
   }
 
-  removerItem(index) {
-    this.itens.splice(index, 1);
-    this.salvarDados();
-    this.atualizarBadge();
+  remove(id) {
+    this.itens = this.itens.filter(item => item.id !== id);
+    this.update();
   }
 
-  alterarQuantidade(index, quantidade) {
-    if (quantidade > 0) {
-      this.itens[index].quantidade = quantidade;
-      this.salvarDados();
-      this.atualizarBadge();
+  change(id, delta) {
+    const item = this.itens.find(entry => entry.id === id);
+    if (!item) return;
+
+    item.quantidade = Math.min(99, item.quantidade + delta);
+    if (item.quantidade <= 0) {
+      this.remove(id);
+    } else {
+      this.update();
     }
   }
 
-  obterTotal() {
-    return this.itens.reduce((total, item) => total + (item.preco * item.quantidade), 0);
-  }
-
-  obterQuantidadeTotal() {
-    return this.itens.reduce((total, item) => total + item.quantidade, 0);
-  }
-
-  limpar() {
+  clear() {
     this.itens = [];
-    this.salvarDados();
-    this.atualizarBadge();
+    this.update();
   }
 
-  salvarDados() {
-    localStorage.setItem('carrinho-cafe', JSON.stringify(this.itens));
+  total() {
+    return this.itens.reduce((sum, item) =>
+      sum + item.preco * item.quantidade, 0);
   }
 
-  carregarDados() {
-    const dados = localStorage.getItem('carrinho-cafe');
-    if (dados) {
-      this.itens = JSON.parse(dados);
+  update() {
+    try {
+      localStorage.setItem('carrinho-cafe', JSON.stringify(this.itens));
+    } catch {
+      // Se o navegador não permitir armazenamento, o carrinho ainda funciona nesta aba.
     }
-  }
 
-  atualizarBadge() {
     const badge = document.getElementById('cartBadge');
-    const quantidade = this.obterQuantidadeTotal();
-    
     if (badge) {
-      if (quantidade > 0) {
-        badge.textContent = quantidade;
-        badge.style.display = 'block';
-      } else {
-        badge.style.display = 'none';
-      }
+      const count = this.itens.reduce((sum, item) => sum + item.quantidade, 0);
+      badge.textContent = count;
+      badge.style.display = count ? 'block' : 'none';
     }
   }
 
-  mostrarNotificacao(mensagem) {
-    // Toast simplificado
-    const toast = document.createElement('div');
-    toast.className = 'toast-notificacao';
-    toast.textContent = mensagem;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.remove();
-    }, 2000);
+  render() {
+    const target = document.getElementById('carrinhoConteudo');
+    const total = document.getElementById('totalCarrinho');
+    const button = document.getElementById('btnFinalizarCompra');
+    if (!target || !total || !button) return;
+
+    target.innerHTML = this.itens.length
+      ? this.itens.map(item => `
+        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+          <div>
+            <strong>${escapeHtml(item.nome)}</strong>
+            <div>${money(item.preco)} × ${item.quantidade}</div>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-step="-1" data-id="${item.id}" aria-label="Diminuir quantidade">−</button>
+            ${item.quantidade}
+            <button class="btn btn-sm btn-outline-secondary"
+                    data-step="1" data-id="${item.id}" aria-label="Aumentar quantidade">+</button>
+            <button class="btn btn-sm btn-outline-danger" data-remove="${item.id}">Remover</button>
+          </div>
+        </div>
+      `).join('')
+      : '<p>Seu carrinho está vazio.</p>';
+
+    total.textContent = money(this.total());
+    button.disabled = !this.itens.length;
   }
 }
 
-// Instância global do carrinho
 let carrinhoGlobal;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
   carrinhoGlobal = new Carrinho();
-  
-  // Botão do carrinho
-  const btnCarrinho = document.getElementById('btnCarrinho');
-  if (btnCarrinho) {
-    btnCarrinho.addEventListener('click', function() {
-      mostrarCarrinho();
-    });
-  }
+
+  document.getElementById('btnCarrinho')?.addEventListener('click', () => {
+    carrinhoGlobal.render();
+    bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('carrinhoModal')
+    ).show();
+  });
+
+  document.getElementById('carrinhoConteudo')?.addEventListener('click', event => {
+    const change = event.target.closest('[data-step]');
+    const remove = event.target.closest('[data-remove]');
+
+    if (change) {
+      carrinhoGlobal.change(Number(change.dataset.id), Number(change.dataset.step));
+    }
+    if (remove) {
+      carrinhoGlobal.remove(Number(remove.dataset.remove));
+    }
+
+    carrinhoGlobal.render();
+  });
 });
-
-function mostrarCarrinho() {
-  const conteudo = document.getElementById('carrinhoConteudo');
-  const totalCarrinho = document.getElementById('totalCarrinho');
-  const btnFinalizarCompra = document.getElementById('btnFinalizarCompra');
-  
-  if (carrinhoGlobal.itens.length === 0) {
-    conteudo.innerHTML = '<div class="carrinho-vazio"><i class="fas fa-shopping-cart"></i><p class="text-muted mt-3">Seu carrinho está vazio</p></div>';
-    btnFinalizarCompra.disabled = true;
-  } else {
-    let html = '';
-    carrinhoGlobal.itens.forEach((item, index) => {
-      html += `
-        <div class="carrinho-item">
-          <div class="item-info">
-            <div class="item-nome">${item.nome}</div>
-            <div class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
-            <div class="text-muted" style="font-size: 0.85rem;">${item.tamanho}</div>
-          </div>
-          <div class="item-quantidade">
-            <button onclick="carrinhoGlobal.alterarQuantidade(${index}, ${item.quantidade - 1}); mostrarCarrinho();">−</button>
-            <span>${item.quantidade}</span>
-            <button onclick="carrinhoGlobal.alterarQuantidade(${index}, ${item.quantidade + 1}); mostrarCarrinho();">+</button>
-          </div>
-          <div>R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</div>
-          <button class="btn-remover" onclick="carrinhoGlobal.removerItem(${index}); mostrarCarrinho();">×</button>
-        </div>
-      `;
-    });
-    conteudo.innerHTML = html;
-    totalCarrinho.textContent = 'R$ ' + carrinhoGlobal.obterTotal().toFixed(2).replace('.', ',');
-    btnFinalizarCompra.disabled = false;
-  }
-  
-  const modal = new bootstrap.Modal(document.getElementById('carrinhoModal'));
-  modal.show();
-}
-
-window.mostrarCarrinho = mostrarCarrinho;

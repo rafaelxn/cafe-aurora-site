@@ -1,0 +1,9 @@
+/* Histórico de pedidos */
+.pedidos-main{min-height:65vh;background:#faf7f3;padding-bottom:4rem}
+.pedidos-header{background:#f1e7dc;padding:3rem 0}
+.pedidos-container{padding-top:2rem}
+.lista-pedidos{max-width:900px;margin:auto}
+.lista-pedidos .card{border:1px solid #e9ddcf;border-radius:14px;box-shadow:0 3px 12px #00000008}
+.lista-pedidos .card-body{padding:1.5rem}
+.lista-pedidos h3{color:#583827}
+@media(max-width:600px){.pedidos-header{padding:2rem 0}.lista-pedidos .card-body{padding:1rem}}
