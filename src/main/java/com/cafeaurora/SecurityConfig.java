@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .securityContext(context -> context.securityContextRepository(contexts))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/*.html", "/favicon.svg", "/static/**", "/error").permitAll()
+                        .requestMatchers("/", "/*.html", "/favicon.svg", "/js/**", "/css/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products", "/api/auth/csrf").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

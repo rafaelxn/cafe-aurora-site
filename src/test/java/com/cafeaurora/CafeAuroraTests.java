@@ -37,9 +37,9 @@ class CafeAuroraTests {
     void publicAssetsAndCatalogAreAvailable() throws Exception {
         mvc.perform(get("/index.html")).andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Aurora")));
-        mvc.perform(get("/static/js/api.js")).andExpect(status().isOk())
+        mvc.perform(get("/js/api.js")).andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("const Api")));
-        mvc.perform(get("/static/css/pedidos.css")).andExpect(status().isOk());
+        mvc.perform(get("/css/pedidos.css")).andExpect(status().isOk());
         mvc.perform(get("/api/products")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", greaterThan(0)));
     }
